@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do List</title>
+    <style>
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color:   #ec7063  ;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        
+        h1 {
+    color:  #5dade2
+    ;
+  
+}
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            
+        }
+
+        input.todoValue {
+            width: 250px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button.btn, button.clrbtn {
+            padding: 10px 15px;
+            border: none;
+            background-color: #28a745;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+
+        button.btn:hover, button.clrbtn:hover {
+            background-color: #218838;
+        }
+
+        ul.todoLists {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        ul.todoLists li {
+            background-color: #e9ecef;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>To Do List</h1>
+    <form>
+        <div>
+            <input type="text" value="" class="todoValue" placeholder="Enter your task"/>
+            <button class="btn">Add Todo</button>
+            <button type="button" class="clrbtn">Clear List</button>
+        </div>
+        <ul class="todoLists"></ul>
+    </form>
+    
+</body>
+<script>
+    const todoLists = document.querySelector(".todoLists");
+    const listValue = document.querySelector(".todoValue");
+
+    const getTodoListFromLS = () => {
+        return JSON.parse(localStorage.getItem("todoData")) || [];
+    }
+
+    const addTodoListLocalStorage = (todo) => {
+        const todos = getTodoListFromLS();
+        todos.push(todo);
+        localStorage.setItem('todoData', JSON.stringify(todos));
+    }
+
+    const renderTodoList = () => {
+        todoLists.innerHTML = "";
+        const todos = getTodoListFromLS();
+        todos.forEach(todo => {
+            const liElement = document.createElement("li");
+            liElement.innerHTML = todo;
+            todoLists.appendChild(liElement);
+        });
+    }
+
+    const addTodoList = (e) => {
+        e.preventDefault();
+        let newTodo = listValue.value.trim();
+        const todos = getTodoListFromLS();
+
+        if (newTodo === "") {
+            todoLists.innerHTML = "";
+            localStorage.removeItem('todoData');
+            return;
+        }
+
+        if (newTodo !== "" && !todos.includes(newTodo)) {
+            addTodoListLocalStorage(newTodo);
+            renderTodoList();
+            listValue.value = ''; 
+        } else if (todos.includes(newTodo)) {
+            alert("This todo already exists! Please add a different one.");
+        }
+    }
+
+ 
+    document.querySelector(".btn").addEventListener("click", (e) => {
+        addTodoList(e);
+    });
+
+    document.querySelector(".clrbtn").addEventListener("click", (e) => {
+        listValue.value = ""; 
+        addTodoList(e); 
+       });
+
+   
+    renderTodoList();
+</script>
+</html>
